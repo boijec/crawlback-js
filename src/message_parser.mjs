@@ -6,9 +6,7 @@ import { GCFriendlyOBJ } from "./global_bases.mjs";
  * @returns { void }
  */
 export function parseIncoming(dataBuffer, requestObj) {
-    console.time('data-buffer-conversion');
     const buff = dataBuffer.toString(); // the buffer has already been parsed by the CPP engine
-    console.timeEnd('data-buffer-conversion');
     // TODO: yeah.. no.. swap to wrapper on this.. course correcting, making a TCP feed not a web-server
     requestObj.method = 'GET';
     requestObj.path = '/'

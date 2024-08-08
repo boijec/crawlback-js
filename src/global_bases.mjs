@@ -3,7 +3,7 @@
  * @class
  */
 export class GCFriendlyOBJ {
-    destroy() {
+    reset() {
         Object.keys(this).forEach((k) => this[k] = null);
     }
 }
@@ -51,23 +51,11 @@ export class ObjectPool {
      */
     get() {
         if(this._ptr > 0) {
-            const o = this._pool[this._ptr-1]
-            this._ptr--;
-            return o;
+            return this._pool[--this._ptr]
         }
         return this._factory();
     }
     returnToPool(item) {
-        item.destroy();
         this._pool[this._ptr++] = item;
-    }
-    /**
-     * NOTE: not used at this time..
-     * @param {Array<any>} items
-     */
-    returnToPoolBulk(items) {
-        for(let n = 0; j < items.length; this._ptr++, n++) {
-            this._pool[this._ptr] = items[n];
-        }
     }
 }
