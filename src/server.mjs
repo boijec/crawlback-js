@@ -44,13 +44,14 @@ class TCPSocketHandler {
             console.time('use-req');
             const req = REQ_OBJ_POOL.get();
             parseIncoming(data, req);
-            // console.log(req);
+            // TODO: handle incoming (should be able to recv login ping and heartbeats on one continous socket)
             REQ_OBJ_POOL.returnToPool(req);
             console.timeEnd('use-req');
             socket.write(Buffer.from("test"), function() {
                 socket.end()
             });
         });
+        // TODO: more gracefull...
         socket.on('error', function() {
             socket.write(Buffer.from("test"), function() {
                 socket.end()
