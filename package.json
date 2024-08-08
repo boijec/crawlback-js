@@ -1,0 +1,22 @@
+{
+  "name": "tcp-dumper-js",
+  "version": "1.0.0",
+  "description": "TCP Feed Server",
+  "main": "index.mjs",
+  "type": "module",
+  "transform": {},
+  "scripts": {
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "dev": "nodemon index.js",
+    "perf": "node --inspect --trace-gc ./index.mjs"
+  },
+  "jest": {
+    "transform": {}
+  },
+  "author": "Carl \"Callback\" Boije",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.4"
+  }
+}
