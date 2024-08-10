@@ -1,4 +1,4 @@
-import {MessageType} from "../src/message.mjs";
+import {MessageType} from "../src/model/message.mjs";
 
 describe('Test internal functionality', () => {
   test('MessageType constructed from string', () => {

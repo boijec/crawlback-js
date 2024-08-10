@@ -1,6 +1,13 @@
 import net from 'net'
-import { Worker } from 'worker_threads';
 import {MessageType, TCPMessage} from "./model/message.mjs";
+import {MESSAGE_EVENT_TARGET, MessageEventTarget} from "./model/message-event.mjs";
+import {readF} from "./util/file-reader.mjs";
+import {ObjectPool} from "./util/object-pool.mjs";
+
+function TCPMessageFactory() {
+    return new TCPMessage();
+}
+const store = new ObjectPool(TCPMessageFactory, 100)
 
 export class TCPApplication {
     /** @type { net.Server } _server */
@@ -39,16 +46,23 @@ class TCPSocketHandler {
      * @param {net.Socket} socket
      */
     static onConnection(socket) {
-        const worker = new Worker('./src/workers/message_processor.mjs');
+        const et = new MessageEventTarget();
+        et.addEventListener('new-message', function(message) {
+            if(message.detail.cursor % 100 === 0) {
+                /**@type{TCPMessage}*/
+                const hbs = store.get();
+                hbs.type = MessageType.HBS;
+                hbs.payload = Buffer.from("HeartBeat!");
+                socket.write(hbs.toBuffer());
+            }
+            socket.write(message.detail.buffer);
+        });
         /**
          * @param {Buffer|string} data
          */
-        socket.on('data', function(data) {
-            console.time('use-req');
-            console.timeEnd('use-req');
-            socket.write(Buffer.from("Processed Data in\r\n"));
+        socket.on('data', async function(data) {
+            await readF(Number.NaN, et);
         });
-        // TODO: more graceful...
         socket.on('error', function() {
             const err = new TCPMessage();
             err.type = MessageType.ERS;
@@ -57,9 +71,5 @@ class TCPSocketHandler {
                 socket.end()
             });
         });
-        worker.on("message", function(buffer) {
-            socket.write(buffer);
-        });
-        worker.postMessage('RDY');
     }
 }
