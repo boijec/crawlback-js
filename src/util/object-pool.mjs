@@ -29,7 +29,7 @@
  * to free the ObjectPool
  * @see free_pool
  */
-export class ObjectPool { // TODO: implement bulk-release back to pool
+export class ObjectPool {
     /**@type{Array<any>}*/
     pool;
     /**@type{Function}*/
@@ -61,22 +61,29 @@ export class ObjectPool { // TODO: implement bulk-release back to pool
         return this.factory();
     }
     returnToPool(item) {
-        // if((this._ptr + 1) > this.__under_lying_alloc) {
-        //     this._listener.dispatchEvent(new CustomEvent('free'));
-        //     return;
-        // }
         this.pool[this._ptr++] = item;
+        console.log(this.pool);
     }
-    _onfree() {
-        console.log("freeing!");
-        free_pool(this);
+    /**
+     * @param {Array<any>} items
+     */
+    returnToPoolBulk(items) {
+        for(let j = 0; j < items.length; ++j, ++this._ptr) {
+            this.pool[this._ptr] = items[j];
+        }
+    }
+    async _onfree() {
+        await free_pool(this);
     }
 }
 /**
  * Reset method to release the pool for GC
  * @param { ObjectPool } pool
  */
-export function free_pool(pool) {
-    pool.pool = new Array(pool.__under_lying_alloc);
-    pool._ptr = 0;
+export async function free_pool(pool) {
+    return new Promise(function(resolve, _reject) {
+        pool.pool = new Array(pool.__under_lying_alloc);
+        pool._ptr = 0;
+        resolve();
+    });
 }

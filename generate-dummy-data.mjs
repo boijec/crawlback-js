@@ -5,7 +5,8 @@ import { MessageType, TCPMessage } from './src/model/message.mjs';
 function TCPMessageFactory() {
     return new TCPMessage();
 }
-const store = new ObjectPool(TCPMessageFactory, 100)
+const store = new ObjectPool(TCPMessageFactory, 500)
+let cacheMem = [];
 const file = fs.createWriteStream('dummy-data.txt', {
     flags: 'a'
 })
@@ -34,15 +35,20 @@ function randomMessage() {
     }
     return o;
 }
-
-for(let i = 0; i < 9000000; i++) {
-    const message = randomMessage();
-    try {
+try {
+    for(let i = 0; i < 9000000; i++) {
+        const message = randomMessage();
+        cacheMem.push(message);
         file.write(message.toBuffer());
-        store.returnToPool(message);
-    } catch(e) {
-        console.error(e);
+        if(cacheMem.length > store.__under_lying_alloc) {
+            store.returnToPoolBulk(cacheMem);
+            cacheMem = [];
+        }
     }
+} catch (e) {
+    console.error(e);
+} finally {
+    await free_pool(store);
+    cacheMem = [];
+    file.end();
 }
-file.end();
-free_pool(store);

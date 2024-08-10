@@ -50,6 +50,7 @@ export class TCPMessage extends GCFriendlyOBJ {
     type;
     /**@type {Buffer} */
     payload;
+    static footer = Buffer.from('\r\n')
 
     constructor() {
         super();
@@ -58,7 +59,7 @@ export class TCPMessage extends GCFriendlyOBJ {
         const b = Buffer.alloc(32);
         this.type.getValue().copy(b, 0);
         this.payload.copy(b, 2);
-        Buffer.from('\r\n').copy(b, 30);
+        TCPMessage.footer.copy(b, 30);
         return b;
     }
 }
