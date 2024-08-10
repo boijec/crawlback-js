@@ -26,6 +26,18 @@ export class MessageType {
     toString() {
         return this.key;
     }
+    /**
+     *
+     * @param {string} value
+     * @returns {MessageType}
+     */
+    static fromStr(value) {
+        for (const k in MessageType) {
+            if (MessageType[k].key === value) {
+                return MessageType[k];
+            }
+        }
+    }
     getValue() {
         return this.value;
     }

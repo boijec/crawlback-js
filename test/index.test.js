@@ -1,9 +1,10 @@
-import { parseIncoming } from "../src/message_parser.mjs";
+import {MessageType} from "../src/message.mjs";
 
-describe('Parse messages', () => {
-  test('Parse standard message', () => {
-    const s = parseIncoming('test');
-    expect(s).toBe('test');
+describe('Test internal functionality', () => {
+  test('MessageType constructed from string', () => {
+    const type = MessageType.fromStr('HBS');
+    expect(type instanceof MessageType).toBe(true);
+    expect(type).toBe(MessageType.HBS);
   });
 });
 
