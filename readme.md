@@ -1,5 +1,5 @@
 # TCP Dumper JS
-Nodejs server simulating realtime streaming data over TCP Socket
+NodeJS server simulating realtime streaming data over TCP Socket
 
 #### CrawlBackTCP Protocol spec
 Max sized packet is 32 bytes long with a message type header of 2 bytes / message footer of 2 bytes.

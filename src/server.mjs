@@ -1,10 +1,6 @@
 import net from 'net'
-import { ObjectPool } from './global_bases.mjs';
-import { parseIncoming, RequestFactory, TCPRequest } from './message_parser.mjs';
 import { Worker } from 'worker_threads';
-
-/** @type { ObjectPool<TCPRequest> } */
-const REQ_OBJ_POOL = new ObjectPool(RequestFactory, 10);
+import {MessageType, TCPMessage} from "./message.mjs";
 
 export class TCPApplication {
     /** @type { net.Server } _server */
@@ -43,22 +39,21 @@ class TCPSocketHandler {
      * @param {net.Socket} socket
      */
     static onConnection(socket) {
-        const worker = new Worker('./src/message_processor.mjs');
+        const worker = new Worker('./src/workers/message_processor.mjs');
         /**
          * @param {Buffer|string} data
          */
         socket.on('data', function(data) {
             console.time('use-req');
-            const req = REQ_OBJ_POOL.get();
-            parseIncoming(data, req);
-            // TODO: handle incoming (should be able to recv login ping and heartbeats on one continous socket)
-            REQ_OBJ_POOL.returnToPool(req);
             console.timeEnd('use-req');
             socket.write(Buffer.from("Processed Data in\r\n"));
         });
-        // TODO: more gracefull...
+        // TODO: more graceful...
         socket.on('error', function() {
-            socket.write(Buffer.from("test"), function() {
+            const err = new TCPMessage();
+            err.type = MessageType.ERS;
+            err.payload = Buffer.from('ERROR OCCURRED');
+            socket.write(err.toBuffer(), function() {
                 socket.end()
             });
         });

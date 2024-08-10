@@ -18,6 +18,8 @@ export class MessageType {
     static LS = new MessageType('LS', '10');
     static LR = new MessageType('LR', '20');
 
+    static ERS = new MessageType('ERS', '99');
+
     static MU = new MessageType('MU', '11');
     static MD = new MessageType('MD', '12');
     static ML = new MessageType('ML', '13');
