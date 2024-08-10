@@ -1,7 +1,7 @@
 {
-  "name": "tcp-dumper-js",
+  "name": "crawlback-js",
   "version": "1.0.0",
-  "description": "TCP Feed Server",
+  "description": "NodeJs TCP Server simulating realtime data system over TCP Socket",
   "main": "index.mjs",
   "type": "module",
   "transform": {},
