@@ -28,8 +28,8 @@ function randomMessage() {
             o.payload = Buffer.from('Character moved DOWN!');
             break;
         case 4:
-            o.type = MessageType.MD;
-            o.payload = Buffer.from('Character moved DOWN!');
+            o.type = MessageType.MU;
+            o.payload = Buffer.from('Character moved UP!');
             break;
     }
     return o;
