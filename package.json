@@ -7,8 +7,9 @@
   "transform": {},
   "scripts": {
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "dev": "nodemon index.js",
-    "perf": "node --inspect --trace-gc ./index.mjs"
+    "dev": "nodemon index.mjs",
+    "perf": "node --inspect --trace-gc ./index.mjs",
+    "gen-data": "node --trace-gc generate_dummy_data.mjs"
   },
   "jest": {
     "transform": {}

@@ -1,20 +1,13 @@
 # TCP Dumper JS
 Nodejs server simulating realtime streaming data over TCP Socket
 
-
-### Notes
-Interesting observation:
-
-Processing when using object pool:
+#### CrawlBackTCP Protocol spec
+Max sized packet is 32 bytes long with a message type header of 2 bytes / message footer of 2 bytes.
+The payload is padded - 28 bytes long.
 ```
-avg - use-req: 0.018ms
+     2 bytes                     28 bytes                              2 bytes
+____________________________________________________________________________________
+|               |                                               |                   |
+|     header    |                 payload                       |      footer       |
+|_______________|_______________________________________________|___________________|
 ```
-Just the object factory:
-```
-avg - use-req: 0.025ms
-spike - use-req: 0.149ms
-```
-A very non-indicative benchmark, but still... not using the object pool is causing
-processing to spike.
-<br />
-(This might come in-handy when buffering up a large amount of socket messages later)

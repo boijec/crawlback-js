@@ -1,9 +1,10 @@
 import net from 'net'
 import { ObjectPool } from './global_bases.mjs';
 import { parseIncoming, RequestFactory, TCPRequest } from './message_parser.mjs';
+import { Worker } from 'worker_threads';
 
 /** @type { ObjectPool<TCPRequest> } */
-const REQ_OBJ_POOL = new ObjectPool(RequestFactory);
+const REQ_OBJ_POOL = new ObjectPool(RequestFactory, 10);
 
 export class TCPApplication {
     constructor() {
@@ -26,8 +27,8 @@ export class TCPApplication {
 }
 class ServerConfig {
     constructor() {
-        this.PORT = 8080;
-        this.ADDR = '0.0.0.0';
+        this.PORT = 8443;
+        this.ADDR = '127.0.0.1';
     }
 }
 
@@ -37,6 +38,7 @@ class TCPSocketHandler {
      * @param {net.Socket} socket
      */
     static onConnection(socket) {
+        const worker = new Worker('./src/message_processor.mjs');
         /**
          * @param {Buffer|string} data
          */
@@ -47,15 +49,17 @@ class TCPSocketHandler {
             // TODO: handle incoming (should be able to recv login ping and heartbeats on one continous socket)
             REQ_OBJ_POOL.returnToPool(req);
             console.timeEnd('use-req');
-            socket.write(Buffer.from("test"), function() {
-                socket.end()
-            });
+            socket.write(Buffer.from("Processed Data in\r\n"));
         });
         // TODO: more gracefull...
         socket.on('error', function() {
             socket.write(Buffer.from("test"), function() {
                 socket.end()
             });
-        })
+        });
+        worker.on("message", function(buffer) {
+            socket.write(buffer);
+        });
+        worker.postMessage('RDY');
     }
 }

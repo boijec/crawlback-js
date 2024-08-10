@@ -34,16 +34,24 @@ export class GCFriendlyOBJ {
  * // release the obj back to the pool
  * OBJ_POOL.returnToPool(obj); // calls obj.destroy();
  * ```
+ * 
+ * to free the ObjectPool
+ * @see {@link free_pool }
  */
-export class ObjectPool {
+export class ObjectPool { // TODO: implement bulk-release back to pool
     /**
      * Object pool constructor
      * @param { Function } factory 
+     * @param { number } alloc_size
      */
-    constructor(factory) {
-        this._pool = new Array();
+    constructor(factory,alloc_size) {
+        this._pool = new Array(alloc_size);
         this._factory = factory;
         this._ptr = 0;
+        this.__under_lying_alloc = alloc_size;
+
+        this._listener = new EventTarget();
+        this._listener.addEventListener('free', () => { this._onfree.bind(this) });
     }
     /**
      * 
@@ -56,6 +64,22 @@ export class ObjectPool {
         return this._factory();
     }
     returnToPool(item) {
+        // if((this._ptr + 1) > this.__under_lying_alloc) {
+        //     this._listener.dispatchEvent(new CustomEvent('free'));
+        //     return;
+        // }
         this._pool[this._ptr++] = item;
     }
+    _onfree() {
+        console.log("freeing!");
+        free_pool(this);
+    }
+}
+/**
+ * Reset method to release the pool for GC
+ * @param { ObjectPool } pool 
+ */
+export function free_pool(pool) {
+    pool._pool = new Array(pool.__under_lying_alloc);
+    pool._ptr = 0;
 }
