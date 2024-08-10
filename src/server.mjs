@@ -1,6 +1,6 @@
 import net from 'net'
 import { Worker } from 'worker_threads';
-import {MessageType, TCPMessage} from "./message.mjs";
+import {MessageType, TCPMessage} from "./model/message.mjs";
 
 export class TCPApplication {
     /** @type { net.Server } _server */

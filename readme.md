@@ -1,4 +1,4 @@
-# TCP Dumper JS
+# CrawlBackJS
 NodeJS server simulating realtime streaming data over TCP Socket
 
 #### CrawlBackTCP Protocol spec

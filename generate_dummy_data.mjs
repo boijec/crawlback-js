@@ -1,6 +1,6 @@
 import fs from 'fs';
-import { free_pool, ObjectPool } from "./src/global_bases.mjs";
-import { MessageType, TCPMessage } from './src/message.mjs';
+import { free_pool, ObjectPool } from './src/util/object_pool.mjs';
+import { MessageType, TCPMessage } from './src/model/message.mjs';
 
 function TCPMessageFactory() {
     return new TCPMessage();
