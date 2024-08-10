@@ -1,4 +1,4 @@
-import { GCFriendlyOBJ } from '../util/gc-utils.mjs';
+import {GCFriendlyOBJ} from '../util/gc-utils.mjs';
 
 export class MessageType {
     /**@type {string} */

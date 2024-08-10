@@ -1,6 +1,6 @@
-import { parentPort } from 'worker_threads';
 import fs from "fs";
 import readLine from "readline";
+import {TCPMessage} from "../model/message.mjs";
 
 export async function readF(startAt, MESSAGE_TARGET) {
     let skipLine = false;
@@ -17,7 +17,7 @@ export async function readF(startAt, MESSAGE_TARGET) {
     for await (const line of rl) {
         if(++cursor < startAt && skipLine) continue;
         Buffer.from(line).copy(tempBuff, 0);
-        Buffer.from('\r\n').copy(tempBuff, 30);
+        TCPMessage.footer.copy(tempBuff, 30);
         MESSAGE_TARGET.dispatchEvent(new CustomEvent('new-message', {detail:{"cursor":cursor,"buffer":tempBuff }}));
     }
 }

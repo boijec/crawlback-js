@@ -1,6 +1,6 @@
 import net from 'net'
 import {MessageType, TCPMessage} from "./model/message.mjs";
-import {MESSAGE_EVENT_TARGET, MessageEventTarget} from "./model/message-event.mjs";
+import {MessageEventTarget} from "./model/message-event.mjs";
 import {readF} from "./util/file-reader.mjs";
 import {ObjectPool} from "./util/object-pool.mjs";
 
