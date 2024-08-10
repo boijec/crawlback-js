@@ -20,16 +20,16 @@ function randomMessage() {
             o.payload = Buffer.from('Character moved DOWN!');
             break;
         case 2:
-            o.type = MessageType.MR;
-            o.payload = Buffer.from('Character moved RIGHT!');
-            break;
-        case 3:
             o.type = MessageType.MU;
             o.payload = Buffer.from('Character moved UP!');
             break;
+        case 3:
+            o.type = MessageType.MD;
+            o.payload = Buffer.from('Character moved DOWN!');
+            break;
         case 4:
-            o.type = MessageType.ML;
-            o.payload = Buffer.from('Character moved LEFT!');
+            o.type = MessageType.MD;
+            o.payload = Buffer.from('Character moved DOWN!');
             break;
     }
     return o;

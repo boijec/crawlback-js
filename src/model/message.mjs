@@ -22,8 +22,8 @@ export class MessageType {
 
     static MU = new MessageType('MU', '11');
     static MD = new MessageType('MD', '12');
-    static ML = new MessageType('ML', '13');
-    static MR = new MessageType('MR', '14');
+    // static ML = new MessageType('ML', '13');
+    // static MR = new MessageType('MR', '14');
 
     toString() {
         return this.key;
