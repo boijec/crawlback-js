@@ -14,11 +14,11 @@ export function parseIncoming(dataBuffer, requestObj) {
 }
 
 export class TCPRequest extends GCFriendlyOBJ {
+    method;
+    path;
+    Accept;
     constructor() {
         super();
-        this.method;
-        this.path;
-        this.Accept;
     }
 }
 export function RequestFactory() {

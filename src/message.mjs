@@ -1,10 +1,13 @@
 import { GCFriendlyOBJ } from './global_bases.mjs';
 
 export class MessageType {
+    /**@type {string} */
+    key;
+    /**@type {Buffer} */
+    value;
+
     constructor(key, value) {
-        /**@type {string} */
         this.key = key;
-        /**@type {Buffer} */
         this.value = Buffer.from(value);
         Object.freeze(this);
     }
@@ -26,18 +29,16 @@ export class MessageType {
     getValue() {
         return this.value;
     }
-    equals(buff) {
-        return Buffer.compare(buff, this.value) == 0;
-    }
 }
 
 export class TCPMessage extends GCFriendlyOBJ {
+    /**@type{MessageType} */
+    type;
+    /**@type {Buffer} */
+    payload;
+
     constructor() {
         super();
-        /** @type { MessageType } */
-        this.type;
-        /**@type {Buffer} */
-        this.payload;
     }
     toBuffer() {
         const b = Buffer.alloc(32);

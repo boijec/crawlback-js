@@ -14,7 +14,7 @@ export class GCFriendlyOBJ {
  *     return new xba();
  * }
  * ```
- * Where a minimum eligebale class is:
+ * Where a minimum eligible class is:
  * ```
  * class xba extends GCFriendlyObject {
  *    constructor() {
@@ -27,7 +27,7 @@ export class GCFriendlyOBJ {
  * ```
  * // declare pool
  * const OBJ_POOL = new ObjectPool(xbaObjectFactory);
- * // let the pool instanciate it
+ * // let the pool instance it
  * const obj = OBJ_POOL.get();
  * obj.foo = 'test'
  * console.log(obj); // xba { foo: "test" }
@@ -36,7 +36,7 @@ export class GCFriendlyOBJ {
  * ```
  * 
  * to free the ObjectPool
- * @see {@link free_pool }
+ * @see free_pool
  */
 export class ObjectPool { // TODO: implement bulk-release back to pool
     /**

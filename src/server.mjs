@@ -7,11 +7,13 @@ import { Worker } from 'worker_threads';
 const REQ_OBJ_POOL = new ObjectPool(RequestFactory, 10);
 
 export class TCPApplication {
+    /** @type { net.Server } _server */
+    _server;
+    /** @type { ServerConfig } config */
+    config;
+
     constructor() {
-        /** @type { net.Server } _server */
         this._server = net.createServer();
-        /** @type { ServerConfig } config */
-        this.config;
     }
     bootstrap() {
         this.config = new ServerConfig();
@@ -26,7 +28,10 @@ export class TCPApplication {
     }
 }
 class ServerConfig {
-    constructor() {
+    PORT = 8443;
+    ADDR = '127.0.0.1';
+
+    constructor() { // TODO: implement load from config file or env vars
         this.PORT = 8443;
         this.ADDR = '127.0.0.1';
     }
