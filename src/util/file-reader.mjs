@@ -1,6 +1,6 @@
 import fs from "fs";
 import readLine from "readline";
-import {MessageType, TCPMessage} from "../model/message.mjs";
+import {TCPMessage} from "../model/message.mjs";
 
 export async function readF(MESSAGE_TARGET, trp, streamFilename, startAt = 0, stopAt = Number.NaN) {
     let shouldStop = false;
@@ -22,10 +22,17 @@ export async function readF(MESSAGE_TARGET, trp, streamFilename, startAt = 0, st
         if(trp.trapValue) return;
         if(++cursor < startAt) continue;
         tempBuff.write(messageRow);
-        MESSAGE_TARGET.dispatchEvent(new CustomEvent('new-message', {detail:{"cursor":cursor-1,"streamBuffer":tempBuff}}));
+        MESSAGE_TARGET.dispatchEvent(new CustomEvent('new-message', {detail:{"cursor":cursor,"streamBuffer":tempBuff}}));
         if(cursor === stopAt && shouldStop) return;
+        //await sleep(2); // simulate lag?
     }
-    tempBuff.write(TCPMessage.EOS_MESSAGE().toString());
-    MESSAGE_TARGET.dispatchEvent(new CustomEvent('new-message', {detail:{"cursor":cursor-1,"streamBuffer":tempBuff}}));
+
+    tempBuff.write(TCPMessage.EOS_MESSAGE().toBuffer().toString());
+    MESSAGE_TARGET.dispatchEvent(new CustomEvent('eos', {detail:{"cursor":cursor,"streamBuffer":tempBuff}}));
 }
 
+async function sleep(ms) {
+    return new Promise(function(resolve, _reject) {
+        setTimeout(resolve, ms)
+    });
+}

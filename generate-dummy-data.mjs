@@ -33,7 +33,7 @@ function randomMessage() {
 }
 console.time('create-file')
 try {
-    for(let i = 0; i < 9000000; i++) {
+    for(let i = 0; i < 1000000; i++) {
         const message = randomMessage();
         file.write(message.toBuffer());
         store.returnToPool(message);

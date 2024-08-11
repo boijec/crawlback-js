@@ -1,5 +1,5 @@
-import { ObjectPool } from "./object-pool.mjs";
-import { TrashCan } from "./trash-can.mjs";
+import {ObjectPool} from "./object-pool.mjs";
+import {TrashCan} from "./trash-can.mjs";
 
 /**
  * Reset method to release the pool for GC
