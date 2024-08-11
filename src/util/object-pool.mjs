@@ -28,11 +28,12 @@
  *
  * to free the ObjectPool
  * @see free_pool
+ * @template T objects
  */
 export class ObjectPool {
-    /**@type{Array<any>}*/
+    /**@type{Array<T>}*/
     pool;
-    /**@type{Function}*/
+    /**@type{() => T}*/
     factory;
     /**@type{number}*/
     _ptr;
@@ -48,7 +49,6 @@ export class ObjectPool {
         this.__under_lying_alloc = alloc_size;
 
         this._listener = new EventTarget();
-        this._listener.addEventListener('free', () => { this._onfree.bind(this) });
     }
     /**
      *
@@ -62,7 +62,6 @@ export class ObjectPool {
     }
     returnToPool(item) {
         this.pool[this._ptr++] = item;
-        console.log(this.pool);
     }
     /**
      * @param {Array<any>} items
@@ -72,18 +71,4 @@ export class ObjectPool {
             this.pool[this._ptr] = items[j];
         }
     }
-    async _onfree() {
-        await free_pool(this);
-    }
-}
-/**
- * Reset method to release the pool for GC
- * @param { ObjectPool } pool
- */
-export async function free_pool(pool) {
-    return new Promise(function(resolve, _reject) {
-        pool.pool = new Array(pool.__under_lying_alloc);
-        pool._ptr = 0;
-        resolve();
-    });
 }

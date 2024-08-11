@@ -1,12 +1,8 @@
 import fs from 'fs';
-import { free_pool, ObjectPool } from './src/util/object-pool.mjs';
-import { MessageType, TCPMessage } from './src/model/message.mjs';
+import { ObjectPool } from './src/util/object-pool.mjs';
+import {MessageType, TCPMessage, TCPMessageFactory} from './src/model/message.mjs';
 
-function TCPMessageFactory() {
-    return new TCPMessage();
-}
-const store = new ObjectPool(TCPMessageFactory, 500)
-let cacheMem = [];
+const store = new ObjectPool(TCPMessageFactory, 1)
 const file = fs.createWriteStream('dummy-data.txt', {
     flags: 'a'
 })
@@ -35,20 +31,17 @@ function randomMessage() {
     }
     return o;
 }
+console.time('create-file')
 try {
     for(let i = 0; i < 9000000; i++) {
         const message = randomMessage();
-        cacheMem.push(message);
         file.write(message.toBuffer());
-        if(cacheMem.length > store.__under_lying_alloc) {
-            store.returnToPoolBulk(cacheMem);
-            cacheMem = [];
-        }
+        store.returnToPool(message);
     }
 } catch (e) {
     console.error(e);
 } finally {
-    await free_pool(store);
-    cacheMem = [];
     file.end();
 }
+console.timeEnd('create-file')
+console.log(process.memoryUsage());

@@ -1,13 +1,11 @@
 import net from 'net'
-import {MessageType, TCPMessage} from "./model/message.mjs";
+import {MessageType, TCPMessage, TCPMessageFactory} from "./model/message.mjs";
 import {MessageEventTarget} from "./model/message-event.mjs";
 import {readF} from "./util/file-reader.mjs";
 import {ObjectPool} from "./util/object-pool.mjs";
+import * as buffer from "node:buffer";
 
-function TCPMessageFactory() {
-    return new TCPMessage();
-}
-const store = new ObjectPool(TCPMessageFactory, 100)
+const store = new ObjectPool(TCPMessageFactory, 1)
 
 export class TCPApplication {
     /** @type { net.Server } _server */
@@ -39,37 +37,36 @@ class ServerConfig {
         this.ADDR = '127.0.0.1';
     }
 }
-
+const exitHandle = Buffer.from([0x17,0x0a])
 class TCPSocketHandler {
     /**
      * 
      * @param {net.Socket} socket
      */
     static onConnection(socket) {
+        let trap = { trapValue: false };
         const et = new MessageEventTarget();
+
+
         et.addEventListener('new-message', function(message) {
             if(message.detail.cursor % 100 === 0) {
-                /**@type{TCPMessage}*/
-                const hbs = store.get();
-                hbs.type = MessageType.HBS;
-                hbs.payload = Buffer.from("HeartBeat!");
-                socket.write(hbs.toBuffer());
+                socket.write(TCPMessage.HBS_MESSAGE().toBuffer());
             }
-            socket.write(message.detail.buffer);
+            socket.write(message.detail.streamBuffer);
         });
         /**
          * @param {Buffer|string} data
          */
-        socket.on('data', async function(data) {
-            await readF(Number.NaN, et);
+        socket.on('data', function(data) {
+            console.log(data);
+            if(exitHandle.equals(data)) socket.emit('error');
+            readF(et, trap, 'dummy-data.txt'); // no need to wait
         });
-        socket.on('error', function() {
-            const err = new TCPMessage();
-            err.type = MessageType.ERS;
-            err.payload = Buffer.from('ERROR OCCURRED');
-            socket.write(err.toBuffer(), function() {
-                socket.end()
-            });
+        socket.on('error', function(error) {
+            trap.trapValue = true;
+            const err = TCPMessage.ERROR();
+            socket.write(err.toBuffer());
+            socket.destroy();
         });
     }
 }

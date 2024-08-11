@@ -9,7 +9,7 @@
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "dev": "nodemon index.mjs",
     "perf": "node --inspect --trace-gc ./index.mjs",
-    "gen-data": "node --trace-gc generate-dummy-data.mjs"
+    "gen-data": "node generate-dummy-data.mjs"
   },
   "jest": {
     "transform": {}

@@ -1,5 +1,3 @@
-import {GCFriendlyOBJ} from '../util/gc-utils.mjs';
-
 export class MessageType {
     /**@type {string} */
     key;
@@ -18,6 +16,7 @@ export class MessageType {
     static LS = new MessageType('LS', '10');
     static LR = new MessageType('LR', '20');
 
+    static EOS = new MessageType('EOS', '98');
     static ERS = new MessageType('ERS', '99');
 
     static MU = new MessageType('MU', '11');
@@ -44,16 +43,38 @@ export class MessageType {
         return this.value;
     }
 }
-
-export class TCPMessage extends GCFriendlyOBJ {
+export function TCPMessageFactory() {
+    return new TCPMessage();
+}
+export class TCPMessage {
     /**@type{MessageType} */
     type;
     /**@type {Buffer} */
     payload;
-    static footer = Buffer.from('\r\n')
+    static footer = Buffer.from([0x0d, 0x0a]);
 
-    constructor() {
-        super();
+    static EOS_MESSAGE = function() {
+        const o = new TCPMessage();
+        o.type = MessageType.EOS;
+        o.payload = Buffer.from("END_OF_SESSION");
+        return o;
+    }
+    static HBS_MESSAGE = function() {
+        const o = new TCPMessage();
+        o.type = MessageType.HBS;
+        o.payload = Buffer.from("HEARTBEAT_REQ");
+        return o;
+    }
+    static ERROR = function() {
+        const o = new TCPMessage();
+        o.type = MessageType.ERS;
+        o.payload = Buffer.from("ERROR_OCCURRED")
+        return o;
+    }
+
+    constructor() {}
+    toString() {
+        return `${this.type}${this.payload}`
     }
     toBuffer() {
         const b = Buffer.alloc(32);
