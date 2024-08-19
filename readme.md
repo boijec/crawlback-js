@@ -27,10 +27,6 @@ ________________________________________________________________________________
 ### Packets
 
 - Client to Server
-  - Heartbeat Response
-    - Header: `0x31 0x35`
-    - Payload: Containing the last seen sequence number
-    - Tail: `0x0d 0x0a`
   - Login Request
     - Header: `0x31 0x30`
     - Payload: Containing username and password separated by a `:`
@@ -40,10 +36,6 @@ ________________________________________________________________________________
     - Payload: Containing the start sequence number
     - Tail: `0x0d 0x0a`
 - Server->Client
-  - Heartbeat Request
-    - Header: `0x30 0x35`
-    - Payload: Static padded text
-    - Tail: `0x0d 0x0a`
   - Login Response
     - Header: `0x32 0x30`
     - Payload: Static padded text
