@@ -1,6 +1,9 @@
 # CrawlBackJS
 NodeJS server simulating realtime streaming data over TCP Socket
 
+Goal: Let your implemented client record the XY coordinates of a character from a top-down perspective,
+moving the character up, down, left or right on each MOVE instuction packet sent form the server.
+
 ## Prerequisites
 - NodeJS `>= 20.15.0`
 
